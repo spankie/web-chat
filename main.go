@@ -49,14 +49,17 @@ func NewRouter() *Router {
 
 func wrapHandler(h http.Handler) httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+		// basically modifies the request context to include parameters
 		ctx := context.WithValue(r.Context(), "params", ps)
 		r = r.WithContext(ctx)
-		//r.Context().Set(r, "params", ps)
-		//r.Context().
-		//context.Set(r, "params", ps)
+
+		// call the next handler. 'cause this handler is done :)
 		h.ServeHTTP(w, r)
 	}
 }
+
+// TODO: How does context work in requests
+// Learn casting interface with .(interface{})
 
 func main() {
 	log.Println("Hello Web Chat")
