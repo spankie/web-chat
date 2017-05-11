@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="webchat">
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,9 +12,47 @@
         <link rel="stylesheet" href="/assets/css/tachyons-hover.css">
         <link rel="stylesheet" href="/assets/css/animate.css">
         <link rel="stylesheet" href="/assets/css/style.css">
+        <!-- Angular 1.X -->
+        <script src="/assets/js/angular.min.js"></script>
+        <script src="/assets/js/script.js"></script>
     </head>
 
-    <body>
-        <h2 class="tc">HELLO</h2>
+    <body ng-controller="ctrl1">
+        <div class="cover" style="background: white url('/assets/img/business-heights.jpeg') center no-repeat">
+            <div class="pa2 h5" style="background-color: rgba(0, 0, 0, .5)">
+                <nav class="pv2 ph3 cf">
+                    <div class="cf">
+                        <h2 class="mv0 fl white">DEE WEB CHAT</h2>
+                        <a href="#!" class="white no-underline fr mv1">About</a>
+                        <a href="#!" class="white no-underline fr mv1 pr4">Code</a>
+                    </div>
+                </nav>
+                
+            </div>
+        </div><!-- cover -->
+        <div class="ph1 ph5-ns tc relative" style="bottom: 8rem;">
+            <p class="f2 green mv1 w6" style="margin-left: auto; margin-right: auto">LOGIN</p>
+            <div class="dib pa3 ba bw2 b--green br1 shadow-5 w6" style="background: white url('/assets/img/grid-bg.png') top left repeat;">
+                <form>
+                    <div class="mb2 tl">
+                        <label class="db mb2">Username:</label>
+                        <input class="pa2 ba b--green br1 w-100" type="text" ng-model="username" name="username" placeholder="Username">
+                    </div>
+                    <div class="mb2 tl">
+                        <label class="db mb2">Password:</label>
+                        <input class="pa2 ba b--green br1 w-100" type="password" ng-model="password" name="passwd" placeholder="Password">
+                    </div>
+                    <div class="mb2">
+                        <p class="mv1"><a href="#!">Sign up</a></p>
+                    </div>
+                    <div class="mb2 tl">
+                        <input class="pv2 ph3 ba bg-white green hover-bg-green hover-white br1 shadow-5 pointer" ng-click="check()" type="submit" name="login" value="LOGIN">
+                    </div>
+                </form>
+            </div>
+            <div class="">
+                <h1>Big UP {{message}}</div>
+            </div>
+        </div>
     </body>
 </html>
