@@ -82,6 +82,15 @@ func main() {
 		fileServer.ServeHTTP(w, r)
 	})
 
+	router.Get("/web/:user", commonHandlers.ThenFunc(func(w http.ResponseWriter, r *http.Request) {
+		// check if the user is authorized...
+		params := r.Context().Value("params").(httprouter.Params)
+		user := params.ByName("user")
+
+		log.Println("User Active :", user)
+		http.ServeFile(w, r, "web/templates/index.html")
+	}))
+
 	// Get the port to serve on from environment variable
 	PORT := os.Getenv("PORT")
 	if PORT == "" {
