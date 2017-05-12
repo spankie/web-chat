@@ -17,22 +17,23 @@
         <script src="/assets/js/script.js"></script>
     </head>
 
-    <body ng-controller="ctrl1">
-        <div class="cover" style="background: white url('/assets/img/business-heights.jpeg') center no-repeat">
+    <body ng-controller="login" class="bg-light-green"><!-- style="background-color: aquamarine -->
+        <div class="cover ba slant-cover" style="background: white url('/assets/img/business-heights.jpeg') center no-repeat">
             <div class="pa2 h5" style="background-color: rgba(0, 0, 0, .5)">
-                <nav class="pv2 ph3 cf">
+                <nav class="pv2 ph7 cf">
                     <div class="cf">
                         <h2 class="mv0 fl white">DEE WEB CHAT</h2>
-                        <a href="#!" class="white no-underline fr mv1">About</a>
-                        <a href="#!" class="white no-underline fr mv1 pr4">Code</a>
+                        <a href="https://github.com/spankie/web-chat" target="_blank" class="white no-underline fr mv1">About</a>
+                        <a href="https://github.com/spankie/web-chat" target="_blank" class="white no-underline fr mv1 pr4">Code</a>
                     </div>
                 </nav>
                 
             </div>
         </div><!-- cover -->
-        <div class="ph1 ph5-ns tc relative" style="bottom: 8rem;">
+        <div class="ph1 ph5-ns tc relative" style="bottom: 10rem;">
             <p class="f2 green mv1 w6" style="margin-left: auto; margin-right: auto">LOGIN</p>
             <div class="dib pa3 ba bw2 b--green br1 shadow-5 w6" style="background: white url('/assets/img/grid-bg.png') top left repeat;">
+                <p class="red f6 tl mt0 mb1">{{error}}</p>
                 <form>
                     <div class="mb2 tl">
                         <label class="db mb2">Username:</label>
@@ -42,16 +43,11 @@
                         <label class="db mb2">Password:</label>
                         <input class="pa2 ba b--green br1 w-100" type="password" ng-model="password" name="passwd" placeholder="Password">
                     </div>
-                    <div class="mb2">
-                        <p class="mv1"><a href="#!">Sign up</a></p>
-                    </div>
-                    <div class="mb2 tl">
-                        <input class="pv2 ph3 ba bg-white green hover-bg-green hover-white br1 shadow-5 pointer" ng-click="check()" type="submit" name="login" value="LOGIN">
+                    <div class="mv3 tl">
+                        <input class="pv2 ph3 ba bg-white green hover-bg-green hover-white br1 shadow-5 pointer" ng-click="login()" type="submit" name="login" value="LOGIN">
+                        <a href="#!" class="fr pv2 ph3 gray hover-bg-green hover-white br1 pointer">Sign Up</a>
                     </div>
                 </form>
-            </div>
-            <div class="">
-                <h1>Big UP {{message}}</div>
             </div>
         </div>
     </body>
