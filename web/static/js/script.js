@@ -1,4 +1,4 @@
-var app = angular.module("webchat", []);
+var app = angular.module("webchat", ['ngCookies']);
 
 app.controller("login", function($scope){
     $scope.username = "";
@@ -6,6 +6,7 @@ app.controller("login", function($scope){
     // $scope.message = "";
     $scope.login = function() {
         if ($scope.username != "" && $scope.password != "") {
+            $http.post("/api/login", {username: $scope.username, password: $scope.password})
             $scope.error = "";
             // $scope.message = $scope.username + " : " + $scope.password;
         } else {

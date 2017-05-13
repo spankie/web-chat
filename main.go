@@ -69,6 +69,10 @@ func main() {
 
 	commonHandlers := alice.New(web.LoggingHandler)
 
+	log.Println("commonhandlers: ", commonHandlers)
+
+	router.Post("/api/login", commonHandlers.ThenFunc(web.Login))
+
 	router.Get("/", commonHandlers.ThenFunc(func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "web/templates/index.html")
 	}))
