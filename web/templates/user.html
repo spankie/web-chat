@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="webchat">
+<html ng-app="userarea">
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -16,7 +16,29 @@
         <script src="/assets/js/angular.min.js"></script>
         <script src="/assets/js/user.js"></script>
     </head>
-    <body>
+    <body ng-controller="user">
+        <div class="">
+            <div class="shadow-4">
+                <nav class="">
+                    <div class="bg-green pv3 ph3">
+                        <a href="/" class="no-underline"><h2 class="mv0 white">DEE WEB CHAT</h2></a>
+                    </div>
+                </nav>
+            </div>
 
+            <div class="pa2">
+                <div class="fl w-25">
+                    <h2 class="tc">Users</h2>
+                </div>
+
+                <div class="fl w-50">
+                    <h2 class="tc">Chat</h2>
+                </div>
+
+                <div class="fl w-25">
+                    <h2 class="tc">Activities</h2>
+                </div>
+            </div>
+        </div>
     </body>
 </html>

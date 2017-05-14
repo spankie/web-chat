@@ -17,8 +17,3 @@ func LoggingHandler(next http.Handler) http.Handler {
 
 	return http.HandlerFunc(logger)
 }
-
-func Login(w http.ResponseWriter, r *http.Request) {
-	// get the post parameters ...
-
-}

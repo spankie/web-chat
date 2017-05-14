@@ -3,6 +3,6 @@
 }
 
 .slant-cover {
-    -webkit-clip-path: polygon(0 0, 1600px 0, 1600px 80%, 0 100%);
-    clip-path: polygon(0 0, 1600px 0, 1600px 50%, 0 100%);
+    -webkit-clip-path: polygon(0 0, 1600px 0, 1600px 100%, 0 100%);
+    clip-path: polygon(0 0, 1600px 0, 1600px 70%, 0 100%);
 }

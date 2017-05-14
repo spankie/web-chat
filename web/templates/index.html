@@ -24,17 +24,16 @@
                 <nav class="pv2 ph7 cf">
                     <div class="cf">
                         <h2 class="mv0 fl white">DEE WEB CHAT</h2>
-                        <a href="https://github.com/spankie/web-chat" target="_blank" class="white no-underline fr mv1">About</a>
-                        <a href="https://github.com/spankie/web-chat" target="_blank" class="white no-underline fr mv1 pr4">Code</a>
+                        <a href="https://github.com/spankie/web-chat" target="_blank" class="white no-underline fr mv1"><img height="25" width="25" src="/assets/img/GitHub-Mark-32px.png" alt="GitHub" class="dib v-top"></a>
+                        <!--<a href="https://github.com/spankie/web-chat" target="_blank" class="white no-underline fr mv1 pr4">About</a>-->
                     </div>
                 </nav>
-                <p>Hello</p>
             </div>
         </div><!-- cover -->
         <div class="ph1 ph5-ns tc relative" style="bottom: 12rem;">
-            <p class="f2 green mv1 w6" style="margin-left: auto; margin-right: auto">LOGIN</p>
+            <p class="f2 white mv1 w6" style="margin-left: auto; margin-right: auto">LOGIN</p>
             <div class="dib pa3 ba bw2 b--green br1 shadow-5 w6" style="background: white url('/assets/img/grid-bg.png') top left repeat;">
-                <p class="red f6 tl mt0 mb1">{{error}}</p>
+                <p class="red f6 tl mt0 mb1">{{error || message}}</p>
                 <form>
                     <div class="mb2 tl">
                         <label class="db mb2">Username:</label>

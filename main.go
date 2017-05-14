@@ -92,7 +92,7 @@ func main() {
 		user := params.ByName("user")
 
 		log.Println("User Active :", user)
-		http.ServeFile(w, r, "web/templates/index.html")
+		http.ServeFile(w, r, "web/templates/user.html")
 	}))
 
 	// Get the port to serve on from environment variable
