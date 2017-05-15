@@ -11,7 +11,7 @@
         <link rel="stylesheet" href="/assets/css/tachyons.min.css">
         <link rel="stylesheet" href="/assets/css/tachyons-hover.css">
         <link rel="stylesheet" href="/assets/css/animate.css">
-        <link rel="stylesheet" href="/assets/css/style.css">
+        <link rel="stylesheet" href="/assets/css/user.css">
         <!-- Angular 1.X -->
         <script src="/assets/js/angular.min.js"></script>
         <script src="/assets/js/user.js"></script>
@@ -27,16 +27,49 @@
             </div>
 
             <div class="pa2">
-                <div class="fl w-25">
-                    <h2 class="tc">Users</h2>
+                <div class="fl w-25 pa2">
+                    <div class="ba b--green pa1">
+                        <h2 class="tc">Users</h2>
+                        <hr class="light">
+                        <div class="">
+                            <p class=""></p>
+                            <input type="text" class="pa2 w-100 mv1" ng-model="friend">
+                            <button ng-disabled="foundFriend" class="pa2 w-100 bg-green ba b--green white">Add</button>
+                        </div>
+                        <hr class="light">
+                        <div class="">
+
+                        </div>
+                    </div>
                 </div>
 
-                <div class="fl w-50">
-                    <h2 class="tc">Chat</h2>
+                <div class="fl w-50 pa2">
+                    <div class="ba b--green pa1">
+                        <h2 class="tc">Chat</h2>
+                        <hr class="light">
+                    </div>
                 </div>
 
-                <div class="fl w-25">
-                    <h2 class="tc">Activities</h2>
+                <div class="fl w-25 pa2">
+                    <div class="ba b--green pa1">
+                        <h2 class="tc">Activities</h2>
+                        <hr class="light">
+                        <div class="ph2">
+                            <div class="br-100 w3 h3 ba b--gray overflow-hidden dib v-mid">
+                                <img src="/assets/img/avatar.jpg" alt="{{username}}">
+                            </div>
+                            <div class="dib v-mid">
+                                <p class="mv1 gray f4">{{username}}</p>
+                                <p class="mv1 f6">status</p>
+                            </div>
+                        </div>
+                        <hr class="light">
+                        <div class="ph2">
+                            <div class="">
+                                <p class="gray">Options</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

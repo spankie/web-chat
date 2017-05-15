@@ -9,8 +9,8 @@
         <title>WEB CHAT</title>
 
         <link rel="stylesheet" href="/assets/css/tachyons.min.css">
-        <link rel="stylesheet" href="/assets/css/tachyons-hover.css">
-        <link rel="stylesheet" href="/assets/css/animate.css">
+        <!--<link rel="stylesheet" href="/assets/css/tachyons-hover.css">-->
+        <!--<link rel="stylesheet" href="/assets/css/animate.css">-->
         <link rel="stylesheet" href="/assets/css/style.css">
         <!-- Angular 1.X -->
         <script src="/assets/js/angular.min.js"></script>
@@ -33,19 +33,20 @@
         <div class="ph1 ph5-ns tc relative" style="bottom: 12rem;">
             <p class="f2 white mv1 w6" style="margin-left: auto; margin-right: auto">LOGIN</p>
             <div class="dib pa3 ba bw2 b--green br1 shadow-5 w6" style="background: white url('/assets/img/grid-bg.png') top left repeat;">
-                <p class="red f6 tl mt0 mb1">{{error || message}}</p>
+                <p ng-if="error" class="pa2 br1 bg-light-red shadow-2 white f6 tl mt0 mb1">{{error || message}}</p>
                 <form>
                     <div class="mb2 tl">
-                        <label class="db mb2">Username:</label>
+                        <label class="db mb2 gray">Username:</label>
                         <input class="pa2 ba b--green br1 w-100" type="text" ng-model="username" name="username" placeholder="Username">
                     </div>
                     <div class="mb2 tl">
-                        <label class="db mb2">Password:</label>
+                        <label class="db mb2 gray">Password:</label>
                         <input class="pa2 ba b--green br1 w-100" type="password" ng-model="password" name="passwd" placeholder="Password">
                     </div>
                     <div class="mv3 tl">
+                        <p class="tc gray">Login or Sign up</p>
                         <input class="pv2 ph3 ba bg-white green hover-bg-green hover-white br1 shadow-5 pointer" ng-click="login()" type="submit" name="login" value="LOGIN">
-                        <a href="#!" class="fr pv2 ph3 gray hover-bg-green hover-white br1 pointer">Sign Up</a>
+                        <button class="fr pv2 ph3 ba bg-white green hover-bg-green hover-white br1 shadow-5 pointer" ng-click="signup()">Sign Up</button>
                     </div>
                 </form>
             </div>
