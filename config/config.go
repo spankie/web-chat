@@ -12,6 +12,7 @@ import (
 type Config struct {
 	DB         map[int]models.User
 	PrivateKey []byte
+	CertKey    []byte
 }
 
 var (
@@ -27,8 +28,15 @@ func init() {
 
 	config.PrivateKey, err = ioutil.ReadFile("./config/keys/key.pem")
 	if err != nil {
-		log.Println("Error reading public key")
-		log.Println(err)
+		log.Println("Error reading private key")
+		log.Println("private key reading error: ", err)
+		return
+	}
+
+	config.CertKey, err = ioutil.ReadFile("./config/keys/cert.pem")
+	if err != nil {
+		log.Println("Error reading cert key")
+		log.Println("cert key error: ", err)
 		return
 	}
 

@@ -65,6 +65,8 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 
 // Login handles login requests
 func Login(w http.ResponseWriter, r *http.Request) {
+	// check for cookie, if there is a cookie validate to log the person in.
+
 	// get the post parameters ...
 	decoder := json.NewDecoder(r.Body)
 	user := models.User{}

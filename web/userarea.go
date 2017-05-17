@@ -29,7 +29,7 @@ func UserArea(w http.ResponseWriter, r *http.Request) {
 
 	token, err := jwt.Parse(cookie.Value, func(token *jwt.Token) (interface{}, error) {
 		if token.Method.Alg() == jwt.SigningMethodRS256.Alg() {
-			pub, err := jwt.ParseRSAPrivateKeyFromPEM(conf.PrivateKey)
+			pub, err := jwt.ParseRSAPublicKeyFromPEM(conf.CertKey)
 			if err != nil {
 				log.Println("Could not create pub")
 				return pub, err
