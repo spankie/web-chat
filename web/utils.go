@@ -1,11 +1,10 @@
 package web
 
 import (
-	"io/ioutil"
-	"log"
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/spankie/web-chat/config"
 	"github.com/spankie/web-chat/models"
 )
 
@@ -24,14 +23,7 @@ func GenerateJWT(user models.User) (tokenString string, err error) {
 	// create a signer for rsa 256
 	t := jwt.NewWithClaims(jwt.GetSigningMethod("RS256"), claims)
 
-	privatekey, err := ioutil.ReadFile("./config/keys/key.pem")
-	if err != nil {
-		log.Println("Error reading public key")
-		log.Println(err)
-		return
-	}
-
-	pub, err := jwt.ParseRSAPrivateKeyFromPEM(privatekey)
+	pub, err := jwt.ParseRSAPrivateKeyFromPEM(config.Get().PrivateKey)
 	if err != nil {
 		return
 	}

@@ -41,7 +41,6 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 				log.Println("Json Error: ", err)
 			}
 			return
-
 		}
 	}
 	// add new user to DB
