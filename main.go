@@ -87,7 +87,7 @@ func main() {
 		fileServer.ServeHTTP(w, r)
 	})
 
-	router.Get("/web/:user", commonHandlers.ThenFunc(web.UserArea))
+	router.Get("/web/:user", commonHandlers.Append(web.AuthHandler).ThenFunc(web.UserArea))
 
 	// Get the port to serve on from environment variable
 	PORT := os.Getenv("PORT")

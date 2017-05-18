@@ -1,10 +1,13 @@
 package web
 
 import (
+	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/spankie/web-chat/config"
 	"github.com/spankie/web-chat/messages"
 	"github.com/spankie/web-chat/models"
@@ -44,6 +47,7 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	// add new user to DB
+	user.ID = dbSize + 1
 	dbSize++
 	db[dbSize] = user
 
@@ -118,4 +122,72 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		log.Println("Json Error: ", err)
 	}
 	return
+}
+
+// AuthHandler authencticates each request...
+func AuthHandler(next http.Handler) http.Handler {
+	conf := config.Get()
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		// check if the user is authorized...
+		// check for cookie.
+		cookie, err := r.Cookie("deewebchat")
+		if err != nil {
+			log.Println("Could not get cookie:", err)
+			next.ServeHTTP(w, r)
+			// http.Redirect(w, r, "/", 302)
+			return
+		}
+		log.Println("cookie: ", cookie.Value)
+
+		// generate a user value from the passed cookie using jwt
+
+		token, err := jwt.Parse(cookie.Value, func(token *jwt.Token) (interface{}, error) {
+			if token.Method.Alg() == jwt.SigningMethodRS256.Alg() {
+				pub, err := jwt.ParseRSAPublicKeyFromPEM(conf.CertKey)
+				if err != nil {
+					log.Println("Could not create pub")
+					return pub, err
+				}
+				log.Println("created pub")
+				return pub, nil
+			}
+			log.Println("Unexpected signing method::", token.Header["alg"])
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		})
+		// Check if there was any error wen parsing the Cookie token
+		if err != nil {
+			// could not parse the token, might be invalid...
+			log.Println("could not parse the token, might be invalid.::", err)
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		// If all goes well, continue to serve the page...
+		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+			/*
+					First check if this user is in the DB, incase he is accessing
+				   	the page with a valid cookie but he has been removed from DB
+			*/
+			user := claims["User"].(map[string]interface{})
+			db := conf.DB
+			log.Printf("%T : %v", user, user)
+			id := int(user["ID"].(float64))
+			if db[id].Username == user["username"].(string) {
+				// set the context for the request so the user will be available to the next handler
+				ctx := context.WithValue(r.Context(), "Claims", claims)
+				r = r.WithContext(ctx)
+				next.ServeHTTP(w, r)
+				return
+			}
+			// the user is not in the DB
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		// if there was an unforseen error, just proceed...
+		next.ServeHTTP(w, r)
+		return
+	}
+
+	return http.HandlerFunc(fn)
 }
