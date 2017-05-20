@@ -28,30 +28,41 @@
 
             <div class="pa2">
                 <div class="fl w-25 pa2">
-                    <div class="ba b--green pa1">
-                        <h2 class="tc">Users</h2>
-                        <hr class="light">
-                        <div class="">
-                            <p class=""></p>
-                            <input type="text" class="pa2 w-100 mv1" ng-model="friend">
-                            <button ng-disabled="foundFriend" class="pa2 w-100 bg-green ba b--green white">Add</button>
+                    <div class="b--green bg-white pa1 shadow-4">
+                        <div class="" style="">
+                            <h2 class="tc">Users</h2>
+                            <hr class="light">
+                            <div class="">
+                                <p class=""></p>
+                                <input type="text" class="pa2 w-100 mv1" ng-model="friend" ng-change="searchFriend()">
+                                <button ng-disabled="foundFriend" class="pa2 w-100 bg-green ba b--green white">Add</button>
+                            </div>
+                            <hr class="light">
                         </div>
-                        <hr class="light">
-                        <div class="">
+                        <div class="" style="overflow: auto; max-height: 400px">
+                            <div class="bb pa2 b--light-gray dim pointer">
+                                <div class="br-100 w3 h3 ba b--gray overflow-hidden dib v-mid">
+                                    <img src="/assets/img/avatar.jpg" alt="{{username}}">
+                                </div>
+                                <div class="dib v-mid">
+                                    <p class="mv1 gray f4">username</p>
+                                    <p class="mv1 f6">status</p>
+                                </div>
+                            </div>
 
                         </div>
                     </div>
                 </div>
 
                 <div class="fl w-50 pa2">
-                    <div class="ba b--green pa1">
+                    <div class="b--green bg-white pa1 shadow-1">
                         <h2 class="tc">Chat</h2>
                         <hr class="light">
                     </div>
                 </div>
 
                 <div class="fl w-25 pa2">
-                    <div class="ba b--green pa1">
+                    <div class="b--green bg-white pa1 shadow-5">
                         <h2 class="tc">Activities</h2>
                         <hr class="light">
                         <div class="ph2">
@@ -67,6 +78,10 @@
                         <div class="ph2">
                             <div class="">
                                 <p class="gray">Options</p>
+                                <ul>
+                                    <li>Option 1</li>
+                                    <li>Option 2</li>
+                                </ul>
                             </div>
                         </div>
                     </div>

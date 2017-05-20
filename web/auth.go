@@ -21,6 +21,8 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 	err := decoder.Decode(&user)
 	if err != nil {
 		log.Println("decode json: ", err)
+		messages.SendError(w, messages.ImproperRequest)
+		return
 	}
 	log.Println("body:", user)
 
@@ -69,6 +71,8 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 
 // Login handles login requests
 func Login(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 	// check for cookie, if there is a cookie validate to log the person in.
 
 	// get the post parameters ...
@@ -77,11 +81,10 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	err := decoder.Decode(&user)
 	if err != nil {
 		log.Println("decode json: ", err)
+		messages.SendError(w, messages.ImproperRequest)
+		return
 	}
 	log.Println("body:", user)
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
 
 	// userresponse := models.UserResponse{}
 	// authenticate the user here ...
@@ -137,7 +140,7 @@ func AuthHandler(next http.Handler) http.Handler {
 			// http.Redirect(w, r, "/", 302)
 			return
 		}
-		log.Println("cookie: ", cookie.Value)
+		// log.Println("cookie: ", cookie.Value)
 
 		// generate a user value from the passed cookie using jwt
 

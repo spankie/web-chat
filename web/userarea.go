@@ -5,8 +5,12 @@ import (
 
 	"log"
 
+	"encoding/json"
+
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/julienschmidt/httprouter"
+	"github.com/spankie/web-chat/config"
+	"github.com/spankie/web-chat/messages"
 )
 
 // UserArea handles request for the userarea.
@@ -37,5 +41,60 @@ func UserArea(w http.ResponseWriter, r *http.Request) {
 	// return
 
 	http.ServeFile(w, r, "web/templates/user.html")
+	return
+}
+
+func SearchFriend(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	// You cant search for friends if you are not logged in...
+	ctx := r.Context()
+	claims := ctx.Value("Claims")
+	if claims == nil {
+		// log attempt to access unauthorized page...
+		log.Println("No claims. sending error")
+		w.WriteHeader(http.StatusOK)
+		messages.SendError(w, messages.NotLoggedIn)
+		return
+	}
+
+	// get the post parameters ...
+	decoder := json.NewDecoder(r.Body)
+	friend := struct {
+		username string
+	}{}
+	err := decoder.Decode(&friend)
+	if err != nil {
+		log.Println("decode json: ", err)
+		messages.SendError(w, messages.ImproperRequest)
+		return
+	}
+	log.Println("body:", friend)
+
+	// search the DB for the username sent
+	db := config.Get().DB
+	for _, user := range db {
+		if friend.username == user.Username {
+			// send the user the id and username of the friend...
+			w.WriteHeader(http.StatusOK)
+			err = json.NewEncoder(w).Encode(struct {
+				ID       int
+				Username string
+			}{
+				ID:       user.ID,
+				Username: user.Username,
+			})
+			if err != nil {
+				log.Println("Json err:", err)
+				return
+			}
+			// i think i will have to add the user to friend list of the present(active) user
+			// TODO:: find a way to reconsile or authenticate the two users wen sending messages
+			return
+		}
+
+	}
+	w.WriteHeader(http.StatusOK)
+	messages.SendError(w, messages.UserNotFound)
 	return
 }

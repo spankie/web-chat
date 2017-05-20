@@ -46,8 +46,9 @@ app.controller("login", function($scope, $http, $cookies, $window){
                 data = response.data;
                 console.log("response: ", data);
                 if(data.status == "ok") {
-                    console.log("You are logged in");
+                    console.log("You are signed up");
                     $scope.error = "";
+                    $scope.message = "Signup successful."
                     // set the cookie here
                     $cookies.put("deewebchat", data.cookie);
                     // navigate to the chat page...
