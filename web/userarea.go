@@ -49,8 +49,8 @@ func SearchFriend(w http.ResponseWriter, r *http.Request) {
 
 	// You cant search for friends if you are not logged in...
 	ctx := r.Context()
-	claims := ctx.Value("Claims")
-	if claims == nil {
+	claims, ok := ctx.Value("Claims").(jwt.MapClaims)
+	if claims == nil || !ok {
 		// log attempt to access unauthorized page...
 		log.Println("No claims. sending error")
 		w.WriteHeader(http.StatusOK)
@@ -58,10 +58,12 @@ func SearchFriend(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	rbody := r.Body
+	log.Println("the body: ", rbody)
 	// get the post parameters ...
-	decoder := json.NewDecoder(r.Body)
+	decoder := json.NewDecoder(rbody)
 	friend := struct {
-		username string
+		Username string `json:"username"`
 	}{}
 	err := decoder.Decode(&friend)
 	if err != nil {
@@ -69,17 +71,17 @@ func SearchFriend(w http.ResponseWriter, r *http.Request) {
 		messages.SendError(w, messages.ImproperRequest)
 		return
 	}
-	log.Println("body:", friend)
+	log.Println("body friend:", friend)
 
 	// search the DB for the username sent
 	db := config.Get().DB
 	for _, user := range db {
-		if friend.username == user.Username {
+		if friend.Username == user.Username && friend.Username != claims["Name"] {
 			// send the user the id and username of the friend...
 			w.WriteHeader(http.StatusOK)
 			err = json.NewEncoder(w).Encode(struct {
-				ID       int
-				Username string
+				ID       int    `json:"id"`
+				Username string `json:"username"`
 			}{
 				ID:       user.ID,
 				Username: user.Username,

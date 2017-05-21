@@ -40,13 +40,13 @@
                             <hr class="light">
                         </div>
                         <div class="" style="overflow: auto; max-height: 400px">
-                            <div class="bb pa2 b--light-gray dim pointer">
+                            <div class="bb pa2 b--light-gray dim pointer" ng-repeat="f in friends">
                                 <div class="br-100 w3 h3 ba b--gray overflow-hidden dib v-mid">
-                                    <img src="/assets/img/avatar.jpg" alt="{{username}}">
+                                    <img src="/assets/img/avatar.jpg" alt="{{f.username}}">
                                 </div>
                                 <div class="dib v-mid">
-                                    <p class="mv1 gray f4">username</p>
-                                    <p class="mv1 f6">status</p>
+                                    <p class="mv1 gray f4">{{f.username}}</p>
+                                    <p class="mv1 f6">status : {{f.id}}</p>
                                 </div>
                             </div>
 
