@@ -6,14 +6,14 @@ userarea.controller("user", function($scope, $location, $http) {
     $scope.username = username;
     $scope.friends = [{id: 60, username: "Silvia"}];
     // if a user search returns a result...
-    $scope.foundFriend = true;
-    $scope.friend = "";
+    $scope.foundFriend = false;
+    $scope.friendName = "";
 
     $scope.searchFriend = function() {
         console.log("FRIEND: ", $scope.friend)
         // search for a friend from the server.
         // /api/search/friend
-        $http.post("/api/search/friend", {username: $scope.friend}).then(function(response){
+        $http.post("/api/search/friend", {username: $scope.friendName}).then(function(response){
             // SUCCESS CALLBACK
             data = response.data;
             console.log(data);
@@ -25,10 +25,20 @@ userarea.controller("user", function($scope, $location, $http) {
             }
             // check if there is id and username
             if(data.hasOwnProperty('id') && data.hasOwnProperty('username')) {
-                $scope.friends.push(data);
+                $scope.friend = data;
+                $scope.foundFriend = true;
+                // DONT ADD YET
+                // $scope.friends.push(data);
             }
         }, function(response) {
             // ERROR CALLBACK
         });
+    }
+
+    $scope.addFriend = () => {
+        console.log("addfriend()");
+        $scope.friends.push($scope.friend);
+        $scope.friend = null;
+        $scope.friendName = "";
     }
 });
