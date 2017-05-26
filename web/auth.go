@@ -38,9 +38,10 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 		if v.Username == user.Username {
 			// there is a user already with that username...return error
 			err = json.NewEncoder(w).Encode(messages.UserResponse{
-				Status: "error",
-				Cookie: "",
-				Error:  messages.UsernameTaken,
+				Status:  "error",
+				Cookie:  "",
+				Error:   messages.UsernameTaken,
+				Message: "",
 			})
 			if err != nil {
 				log.Println("Json Error: ", err)
@@ -60,9 +61,10 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = json.NewEncoder(w).Encode(messages.UserResponse{
-		Status: "ok",
-		Cookie: tokenstring,
-		Error:  "",
+		Status:  "ok",
+		Cookie:  tokenstring,
+		Error:   "",
+		Message: "",
 	})
 	if err != nil {
 		log.Println("Json Error: ", err)
@@ -95,19 +97,20 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	// db[1] = user
 	dbSize := len(db)
 	log.Println("len(db):", dbSize)
-	// check if there is a user with the same username and password...
+	// check if username and password is correct...
 	for _, v := range db {
 		if v.Username == user.Username && v.Password == user.Password {
 			// if the user is authenticated, send him a cookie, he/she has been a good boy/girl
-			tokenstring, err := GenerateJWT(user)
+			tokenstring, err := GenerateJWT(v)
 			if err != nil {
 				log.Println("jwt err:", err)
 			}
 
 			err = json.NewEncoder(w).Encode(messages.UserResponse{
-				Status: "ok",
-				Cookie: tokenstring,
-				Error:  "",
+				Status:  "ok",
+				Cookie:  tokenstring,
+				Error:   "",
+				Message: "",
 			})
 			if err != nil {
 				log.Println("Json Error: ", err)
@@ -115,7 +118,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	// there is a user already with that username...return error
+	// the username or password is incorrect...
 	err = json.NewEncoder(w).Encode(messages.UserResponse{
 		Status: "error",
 		Cookie: "",

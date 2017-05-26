@@ -11,6 +11,7 @@ import (
 // Config holds the application wide data.
 type Config struct {
 	DB         map[int]models.User
+	Friends    map[int][]int
 	PrivateKey []byte
 	CertKey    []byte
 }
@@ -21,7 +22,7 @@ var (
 
 // init initialises the config
 func init() {
-	config = Config{DB: make(map[int]models.User, 10)}
+	config = Config{DB: make(map[int]models.User, 10), Friends: make(map[int][]int, 10)}
 
 	// Just to make PrivateKey assign on the next line
 	var err error

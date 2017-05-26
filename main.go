@@ -72,6 +72,8 @@ func main() {
 	log.Println("commonhandlers: ", commonHandlers)
 
 	router.Post("/api/search/friend", commonHandlers.Append(web.AuthHandler).ThenFunc(web.SearchFriend))
+	router.Post("/api/add/friend/:id", commonHandlers.Append(web.AuthHandler).ThenFunc(web.AddFriend))
+	router.Post("/api/get/friends", commonHandlers.Append(web.AuthHandler).ThenFunc(web.GetFriends))
 
 	router.Post("/api/signup", commonHandlers.ThenFunc(web.Signup))
 	router.Post("/api/login", commonHandlers.ThenFunc(web.Login))

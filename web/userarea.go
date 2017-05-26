@@ -7,10 +7,13 @@ import (
 
 	"encoding/json"
 
+	"strconv"
+
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/julienschmidt/httprouter"
 	"github.com/spankie/web-chat/config"
 	"github.com/spankie/web-chat/messages"
+	"github.com/spankie/web-chat/models"
 )
 
 // UserArea handles request for the userarea.
@@ -44,6 +47,7 @@ func UserArea(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+// SearchFriend searches for a friend with their username...
 func SearchFriend(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
@@ -73,16 +77,22 @@ func SearchFriend(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Println("body friend:", friend)
 
+	claimsUser := claims["User"].(map[string]interface{})
+	claimID := int(claimsUser["ID"].(float64))
+	log.Println("claimID:", claimID)
+
 	// search the DB for the username sent
-	db := config.Get().DB
-	for _, user := range db {
+	conf := config.Get()
+	for _, user := range conf.DB {
 		if friend.Username == user.Username && friend.Username != claims["Name"] {
+			if ContainsInt(conf.Friends[claimID], user.ID) {
+				continue
+				// tell the user the friend has been added already...
+			}
+
 			// send the user the id and username of the friend...
 			w.WriteHeader(http.StatusOK)
-			err = json.NewEncoder(w).Encode(struct {
-				ID       int    `json:"id"`
-				Username string `json:"username"`
-			}{
+			err = json.NewEncoder(w).Encode(models.Friend{
 				ID:       user.ID,
 				Username: user.Username,
 			})
@@ -91,6 +101,9 @@ func SearchFriend(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			// i think i will have to add the user to friend list of the present(active) user
+			// TODO::: write trivial function to check if it contains user.ID
+			// conf.Friends[claimID] = append(conf.Friends[claimID], user.ID)
+			// log.Println("conf.Friends:", conf.Friends)
 			// TODO:: find a way to reconsile or authenticate the two users wen sending messages
 			return
 		}
@@ -99,4 +112,97 @@ func SearchFriend(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	messages.SendError(w, messages.UserNotFound)
 	return
+}
+
+// AddFriend adds a friend to the users friends list...
+func AddFriend(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	claims, ok := ctx.Value("Claims").(jwt.MapClaims)
+	if claims == nil || !ok {
+		// log attempt to access unauthorized page...
+		log.Println("No claims. sending error")
+		w.WriteHeader(http.StatusOK)
+		messages.SendError(w, messages.NotLoggedIn)
+		return
+	}
+
+	claimsUser := claims["User"].(map[string]interface{})
+	claimID := int(claimsUser["ID"].(float64))
+	log.Println("claimID:", claimID)
+
+	conf := config.Get()
+
+	params := ctx.Value("params").(httprouter.Params)
+	friendID, err := strconv.Atoi(params.ByName("id"))
+	if err != nil {
+		log.Println("Invalid Friend ID")
+		w.WriteHeader(http.StatusOK)
+		messages.SendError(w, messages.ImproperRequest)
+		return
+	}
+
+	if ContainsInt(conf.Friends[claimID], friendID) {
+		log.Println("Already friends with this user.")
+		log.Println("myfriends:", conf.Friends[claimID])
+		w.WriteHeader(http.StatusOK)
+		messages.SendError(w, messages.FriendExists)
+		return
+		// tell the user the friend has been added already...
+	}
+
+	// now add the friend to the friends list...
+	conf.Friends[claimID] = append(conf.Friends[claimID], friendID)
+	log.Println("conf.Friends:", conf.Friends)
+
+	w.WriteHeader(http.StatusOK)
+	err = json.NewEncoder(w).Encode(messages.UserResponse{
+		Status:  "ok",
+		Cookie:  "",
+		Error:   "",
+		Message: messages.FriendAdded,
+	})
+	if err != nil {
+		log.Println("Json Error: ", err)
+	}
+
+}
+
+// GetFriends gets list of all friends connected to.
+func GetFriends(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	claims, ok := ctx.Value("Claims").(jwt.MapClaims)
+	if claims == nil || !ok {
+		// log attempt to access unauthorized page...
+		log.Println("No claims. sending error")
+		w.WriteHeader(http.StatusOK)
+		messages.SendError(w, messages.NotLoggedIn)
+		return
+	}
+
+	claimsUser := claims["User"].(map[string]interface{})
+	claimID := int(claimsUser["ID"].(float64))
+	log.Println("claimID:", claimID)
+
+	conf := config.Get()
+	db := conf.DB
+	var friendsList []models.Friend
+
+	for _, v := range conf.Friends[claimID] {
+		user := db[v]
+		afriend := models.Friend{
+			ID:       user.ID,
+			Username: user.Username,
+		}
+		friendsList = append(friendsList, afriend)
+	}
+	if len(friendsList) < 1 {
+		log.Println("No friends")
+		w.WriteHeader(http.StatusOK)
+		messages.SendError(w, messages.NoFriends)
+		return
+	}
+	err := json.NewEncoder(w).Encode(friendsList)
+	if err != nil {
+		log.Println("JSON ERROR:", err)
+	}
 }
