@@ -1,6 +1,6 @@
-userarea = angular.module("userarea", ['ngCookies']);
+userarea = angular.module("userarea", ['ngCookies', 'ngWebSocket']);
 
-userarea.controller("user", function($scope, $location, $cookies, $http, $window) {
+userarea.controller("user", function($scope, $location, $cookies, $http, $window, $websocket) {
     var chatBox = document.getElementById("chatbox");
     chatBox.scrollTop = chatBox.scrollHeight;
     
