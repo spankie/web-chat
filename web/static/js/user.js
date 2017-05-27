@@ -1,12 +1,16 @@
 userarea = angular.module("userarea", ['ngCookies']);
 
 userarea.controller("user", function($scope, $location, $cookies, $http, $window) {
+    var chatBox = document.getElementById("chatbox");
+    chatBox.scrollTop = chatBox.scrollHeight;
+    
     urlsplit = $location.absUrl().split("/");
     username = urlsplit[urlsplit.length - 1];
     $scope.username = username;
     $scope.friends = [];
     $http.post("/api/get/friends", {}).then(function(response){
         // success response callback
+        data = response.data;
         if (data.hasOwnProperty('status') && data.status == 'error') {
             // You have no friends
             // tell the user

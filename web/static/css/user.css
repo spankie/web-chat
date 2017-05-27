@@ -1,5 +1,6 @@
 html {
     height: 100%;
+    min-width: 900px;
 }
 
 body {
@@ -111,4 +112,41 @@ hr.light {
     box-shadow: 0 -2em;
     height: 5em;
   }
+}
+
+#chatbox {
+   -moz-box-shadow:    inset 0 0 6px gray;
+   -webkit-box-shadow: inset 0 0 6px gray;
+   box-shadow:         inset 0 0 6px gray;
+
+   overflow: auto;
+   min-height: 300px;
+   max-height: 400px;
+}
+
+/* Friend message */
+.fm::after {
+    content: "";
+    position: absolute;
+    right: 100%;
+    bottom: 4px;
+    margin-right: -13px;
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent transparent white transparent ;
+}
+
+.mm::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 4px;
+    margin-right: -7px;
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent transparent white transparent ;
+}
+
+.sender {
+    font-size: .8rem;
 }
