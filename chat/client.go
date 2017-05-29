@@ -7,7 +7,7 @@ import (
 
 	"bytes"
 
-	"encoding/binary"
+	"strconv"
 
 	"github.com/gorilla/websocket"
 	"github.com/spankie/web-chat/models"
@@ -52,19 +52,42 @@ func (c *Client) readPump() {
 			break
 		}
 		// arrange the message by getting the recepient id
+		log.Println("ReadPump: Got message from client...", string(message))
 		message = bytes.TrimSpace(message)
 		mm := bytes.SplitN(message, newline, 2)
+		log.Println("mm: ", mm[0])
+		rpt, _ := strconv.Atoi(string(mm[0]))
 		m := Message{
-			recepient: int(binary.BigEndian.Uint64(mm[0])),
+			recepient: rpt,
 			message:   mm[1],
 			Me:        c.User.ID,
 		}
+		log.Println("ReadPump: Arranged the message...Sending to recepient server send channel")
 		send <- m
+		log.Println("ReadPump: sent to the send channel...")
 	}
 }
 
 func (c *Client) writePump() {
+	// TODO:: Try and check if the server closed the channel
 	for m := range c.send {
+		// if !ok {
+		// 	c.Conn.WriteMessage(websocket.CloseMessage, []byte{})
+		// 	return
+		// }
+		log.Println("New message received from server...")
+		c.Conn.SetWriteDeadline(time.Now().Add(writeWait))
+		w, err := c.Conn.NextWriter(websocket.TextMessage)
+		if err != nil {
+			return
+		}
+		log.Println("Writing to self...")
+		w.Write(m)
+		log.Println("Wrote to self...")
+		if err := w.Close(); err != nil {
+			log.Println("Could not close the writer...")
+			return
+		}
 		log.Println("Message: ", string(m))
 	}
 	// for {

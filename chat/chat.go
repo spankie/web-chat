@@ -25,10 +25,12 @@ func Chat(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
+	log.Println("Created connection...")
 	wr, err := conn.NextWriter(websocket.TextMessage)
 	if err != nil {
 		return
 	}
+	log.Println("New writer...")
 	// check if there is a new claim
 	claims, ok := ctx.Value("Claims").(jwt.MapClaims)
 	if claims == nil || !ok {
@@ -47,13 +49,21 @@ func Chat(w http.ResponseWriter, r *http.Request) {
 	db := config.Get().DB
 	// create a client object for the user.
 	client := &Client{User: db[claimID], Conn: conn, send: make(chan []byte)}
+	log.Println("New client with id : ", claimID)
 	// add the client to a map.
 	addClient <- client
+	log.Println("Sent client to addClient")
 	// send a welcome message
 	wr.Write([]byte("Welcome to DEE WEB-CHAT..."))
-	// launch a goroutine to handle reading and writing to the client
 	if err = wr.Close(); err != nil {
 		log.Println("error closing: ", err)
 	}
-	log.Println("::::CHAT::::")
+	log.Println("Wrote: Welcome to DEE WEB-CHAT...")
+	// launch a goroutine to handle reading and writing to the client
+	go client.writePump()
+	log.Println("launched writepump", claimID)
+	log.Println("starting readpump", claimID)
+	client.readPump()
+	log.Println("started readpump", claimID)
+	// log.Println("::::CHAT::::")
 }

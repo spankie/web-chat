@@ -53,6 +53,17 @@ userarea.controller("user", function($scope, $location, $cookies, $http, $window
     $scope.friend = null;
     $scope.addLoader = false;
 
+    $scope.sendMessage = () => {
+        if (!conn) {
+            console.log("No connection");
+            return
+        }
+        var mm = "2\nHello There";
+        console.log("Sending: ", mm)
+        conn.send(mm);
+        console.log("Sent: ", mm)
+    }
+
     $scope.searchFriend = function() {
         console.log("FRIEND: ", $scope.friend)
         // search for a friend from the server.
