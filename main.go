@@ -9,6 +9,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"github.com/justinas/alice"
 	"github.com/rs/cors"
+	"github.com/spankie/web-chat/chat"
 	"github.com/spankie/web-chat/web"
 )
 
@@ -81,6 +82,8 @@ func main() {
 	router.Get("/", commonHandlers.ThenFunc(func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "web/templates/index.html")
 	}))
+
+	router.Get("/api/chat", commonHandlers.Append(web.AuthHandler).ThenFunc(chat.Chat))
 
 	// SERVE STATIC FILES FROM THE STATIC FOLDER
 	fileServer := http.FileServer(http.Dir("./web/static"))

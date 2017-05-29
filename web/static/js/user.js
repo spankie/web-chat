@@ -24,6 +24,28 @@ userarea.controller("user", function($scope, $location, $cookies, $http, $window
         // error response callback
     });
 
+
+    // WEBSOCKET
+    if(window["WebSocket"]) {
+        console.log("WebSocket is available");
+        // initiate the connection
+        var conn = new WebSocket("ws://" + document.location.host + "/api/chat");
+        conn.onclose = function (event) {
+            console.log("connection closed.")
+        }
+        conn.onmessage = function (event) {
+            console.log("websocket message: " + event.data);
+            var m = event.data.split('\n');
+            for (var i = 0; i < m.length; i++) {
+                console.log(m[i]);
+            }
+        }
+    } else {
+        console.log("NO WEBSOCKET...");
+    }
+
+
+
     // $scope.friends = [{id: 60, username: "Silvia"}];
     // if a user search returns a result...
     $scope.foundFriend = false;
