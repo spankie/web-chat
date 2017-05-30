@@ -41,7 +41,8 @@ type Client struct {
 
 func (c *Client) readPump() {
 	c.Conn.SetReadLimit(maxMessageSize)
-	c.Conn.SetReadDeadline(time.Now().Add(pongWait))
+	c.Conn.SetReadDeadline(time.Time{}) // pass zero value to prevent time out
+	// c.Conn.SetReadDeadline(time.Now().Add(pongWait))
 	c.Conn.SetPongHandler(func(string) error { c.Conn.SetReadDeadline(time.Now().Add(pongWait)); return nil })
 	for {
 		_, message, err := c.Conn.ReadMessage()
@@ -49,6 +50,7 @@ func (c *Client) readPump() {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
 				log.Println("Error: ", err)
 			}
+			log.Println("readpump: normal Error: ", err)
 			break
 		}
 		// arrange the message by getting the recepient id

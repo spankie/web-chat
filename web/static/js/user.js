@@ -8,20 +8,29 @@ userarea.controller("user", function($scope, $location, $cookies, $http, $window
     username = urlsplit[urlsplit.length - 1];
     $scope.username = username;
     $scope.friends = [];
+    $scope.chat = {}
+    // Fetch friends. (Incase of page reloads...)
     $http.post("/api/get/friends", {}).then(function(response){
         // success response callback
         data = response.data;
         if (data.hasOwnProperty('status') && data.status == 'error') {
             // You have no friends
             // tell the user
-            console.log("no friends");
-        } else if (data.hasOwnProperty('status') && data.status == 'ok') {
+            console.log("no friends:", data, " type:", typeof data);
+            return;
+        } else if (data.length > 0) {
             $scope.friends = data;
-            console.log("Some friends");
+            data.forEach(function(fr) {
+                // each array of message is going to contain objects of messages...
+                $scope.chat[fr.usernme] = [];
+            }, this);
+            console.log("Got Some friends");
+            return;
         }
-        console.log("scope test");
+        console.log("neither no friends nor friends. Data: ", data, " type: ", typeof data);
     }, function(response) {
         // error response callback
+        console.log("Error response: ". response)
     });
 
 
@@ -44,14 +53,13 @@ userarea.controller("user", function($scope, $location, $cookies, $http, $window
         console.log("NO WEBSOCKET...");
     }
 
-
-
     // $scope.friends = [{id: 60, username: "Silvia"}];
     // if a user search returns a result...
     $scope.foundFriend = false;
     $scope.friendName = "";
     $scope.friend = null;
     $scope.addLoader = false;
+    $scope.context = null;
 
     $scope.sendMessage = () => {
         if (!conn) {
@@ -64,7 +72,22 @@ userarea.controller("user", function($scope, $location, $cookies, $http, $window
         console.log("Sent: ", mm)
     }
 
-    $scope.searchFriend = function() {
+    $scope.changeContext = (me) => {
+        console.log(me.f.id)
+        $scope.context = {
+            id: me.f.id,
+            username: me.f.username
+        }
+        /*
+            Message : {
+                who: me/friend
+                datetime: new Date()
+                message: "hello sire"
+            }
+        */
+    }
+
+    $scope.searchFriend = () => {
         console.log("FRIEND: ", $scope.friend)
         // search for a friend from the server.
         // /api/search/friend

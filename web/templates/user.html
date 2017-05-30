@@ -57,13 +57,15 @@
                             <hr class="light">
                         </div>
                         <div class="" style="overflow: auto; max-height: 400px">
-                            <div class="bb pa2 b--light-gray dim pointer" ng-repeat="f in friends track by $index">
-                                <div class="br-100 w3 h3 ba b--gray overflow-hidden dib v-mid">
-                                    <img src="/assets/img/avatar.jpg" alt="{{f.username}}">
-                                </div>
-                                <div class="dib v-mid">
-                                    <p class="mv1 gray f4">{{f.username}}</p>
-                                    <p class="mv1 f6">status : {{f.id}}</p>
+                            <div class="bb pa2 b--light-gray" ng-repeat="f in friends track by $index">
+                                <div class="dim pointer" ng-click="changeContext(this)" id="{{f.id}}">
+                                    <div class="br-100 w3 h3 ba b--gray overflow-hidden dib v-mid">
+                                        <img src="/assets/img/avatar.jpg" alt="{{f.username}}">
+                                    </div>
+                                    <div class="dib v-mid">
+                                        <p class="mv1 gray f4">{{f.username}}</p>
+                                        <p class="mv1 f6">status : {{f.id}}</p>
+                                    </div>
                                 </div>
                             </div>
 
@@ -73,30 +75,33 @@
 
                 <div class="fl w-50 pa2">
                     <div class="b--green bg-white pa1 shadow-1">
-                        <h2 class="tc">Chat</h2>
+                        <h2 class="tc">Chat {{ context.username || "" }}</h2>
                         <hr class="light">
                         <div class="">
                             <div class="pa2 bg-green" id="chatbox">
-                                <div class="relative">
-                                    <div class="cf"><p class="mv0 white sender">Friend:</p></div>
-                                    <div class="pa2 bg-white green dib br3 mv1 fm shadow-4">
-                                        <span class="">Hello spankie</span>
-                                        <span class="">26/05/2017</span>
+                                <p ng-if="!chat[context.username].length" class="green bg-white tc pa2 shadow-4">No Chat History</p>
+                                <div class="">    
+                                    <div ng-if="chat[context.username].length" class="relative" ng-repeat="message in chat[context.username]">
+                                        <div class="cf"><p class="mv0 white sender">Friend:</p></div>
+                                        <div class="pa2 bg-white green dib br3 mv1 fm shadow-4">
+                                            <span class="">Hello spankie</span>
+                                            <span class="">26/05/2017</span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="relative">
-                                    <div class="cf"><p class="mv0 white sender">Friend:</p></div>
-                                    <div class="pa2 bg-white green dib br3 mv1 fm shadow-4">
-                                        <span class="">Hello spankie</span>
-                                        <span class="">26/05/2017</span>
+                                    <!--<div class="relative">
+                                        <div class="cf"><p class="mv0 white sender">Friend:</p></div>
+                                        <div class="pa2 bg-white green dib br3 mv1 fm shadow-4">
+                                            <span class="">Hello spankie</span>
+                                            <span class="">26/05/2017</span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="cf relative">
-                                    <div class="cf"><p class="mv0 fr white sender">Me:</p></div>
-                                    <div class="pa2 bg-white green dib br3 mv1 fr mm shadow-4">
-                                        <span class="">Hello spankie<br>hello there</span>
-                                        <span class="">26/05/2017</span>
-                                    </div>
+                                    <div class="cf relative">
+                                        <div class="cf"><p class="mv0 fr white sender">Me:</p></div>
+                                        <div class="pa2 bg-white green dib br3 mv1 fr mm shadow-4">
+                                            <span class="">Hello spankie<br>hello there</span>
+                                            <span class="">26/05/2017</span>
+                                        </div>
+                                    </div>-->
                                 </div>
                             </div>
                             <div class="pa2 cf">
