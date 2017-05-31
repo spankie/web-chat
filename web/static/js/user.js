@@ -22,7 +22,7 @@ userarea.controller("user", function($scope, $location, $cookies, $http, $window
             $scope.friends = data;
             data.forEach(function(fr) {
                 // each array of message is going to contain objects of messages...
-                $scope.chat[fr.usernme] = [];
+                $scope.chat[fr.username] = [];
             }, this);
             console.log("Got Some friends");
             return;
@@ -47,6 +47,12 @@ userarea.controller("user", function($scope, $location, $cookies, $http, $window
             var m = event.data.split('\n');
             for (var i = 0; i < m.length; i++) {
                 console.log(m[i]);
+                $scope.chat[$scope.context.username].push({
+                    who: "friend",
+                    datetime: now,
+                    message: $scope.message
+                });
+
             }
         }
     } else {
@@ -60,23 +66,46 @@ userarea.controller("user", function($scope, $location, $cookies, $http, $window
     $scope.friend = null;
     $scope.addLoader = false;
     $scope.context = null;
+    $scope.message = "";
 
     $scope.sendMessage = () => {
         if (!conn) {
             console.log("No connection");
+            $scope.errorMessage = "Connection not available";
             return
         }
-        var mm = "2\nHello There";
-        console.log("Sending: ", mm)
-        conn.send(mm);
-        console.log("Sent: ", mm)
+        if ($scope.context === null || $scope.context.id == 'undefined' || isNaN($scope.context.id)) {
+            console.log("COntext :", $scope.context);
+            // console.log("typeof id", typeof $scope.context.id);
+            return;
+        }
+
+        // check if message is empty:
+        if ($scope.message == "") {
+            $scope.errorMessage = "Empty message.";
+            return;
+        }
+        var theMessage = $scope.context.id + "\n" + $scope.message;
+        // var mm = "2\nHello There";
+        var now = new Date();
+        now = now.getDate() + "/" + now.getMonth() + "/" + now.getFullYear();
+        console.log("Sending: ", theMessage, "at: ", now);
+        conn.send(theMessage);
+        console.log("Sent: ", theMessage)
+        // add the message to the chat history of this partiular context user
+        console.log("$Scope.chat: ", $scope.chat, " username: ", $scope.context.username);
+        $scope.chat[$scope.context.username].push({
+                who: "me",
+                datetime: now,
+                message: $scope.message
+            });
     }
 
     $scope.changeContext = (me) => {
         console.log(me.f.id)
         $scope.context = {
-            id: me.f.id,
-            username: me.f.username
+            id       : me.f.id,
+            username : me.f.username
         }
         /*
             Message : {

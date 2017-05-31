@@ -79,13 +79,13 @@
                         <hr class="light">
                         <div class="">
                             <div class="pa2 bg-green" id="chatbox">
-                                <p ng-if="!chat[context.username].length" class="green bg-white tc pa2 shadow-4">No Chat History</p>
+                                <p ng-if="!chat[context.username].length" class="green bg-white tc pa2 shadow-4 br1">No Chat History</p>
                                 <div class="">    
                                     <div ng-if="chat[context.username].length" class="relative" ng-repeat="message in chat[context.username]">
-                                        <div class="cf"><p class="mv0 white sender">Friend:</p></div>
+                                        <div class="cf"><p class="mv0 white sender">{{message.who}}:</p></div>
                                         <div class="pa2 bg-white green dib br3 mv1 fm shadow-4">
-                                            <span class="">Hello spankie</span>
-                                            <span class="">26/05/2017</span>
+                                            <span class="">{{message.message}}</span>
+                                            <span class="">{{message.datetime}}</span>
                                         </div>
                                     </div>
                                     <!--<div class="relative">
@@ -104,8 +104,9 @@
                                     </div>-->
                                 </div>
                             </div>
-                            <div class="pa2 cf">
-                                <textarea class="w-100 h3" style="max-width: 100%; max-height: 70px;">Hello there.</textarea>
+                            <div class="pb2 cf">
+                                <p class="mv1 red tc">{{ errorMessage }}</p>
+                                <textarea class="w-100 h3" style="max-width: 100%; max-height: 70px;" ng-model="message">Hello there.</textarea>
                                 <input type="button" ng-click="sendMessage()" value="SEND" class="mv1 w-20 ba bg-green white shadow-2 pa2 fr">
                             </div>
                         </div>
