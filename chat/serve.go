@@ -4,19 +4,20 @@ import "log"
 
 // Message indicate the structure of a message...
 type Message struct {
-	recepient int
-	message   []byte
-	Me        int
+	Sender    string
+	Datetime  string
+	Message   string
+	Recepient int
 }
 
 var (
-	clients   map[*Client]bool
+	clients   map[*Client]int
 	addClient chan *Client
 	send      chan Message
 )
 
 func init() {
-	clients = make(map[*Client]bool, 10)
+	clients = make(map[*Client]int, 10)
 	addClient = make(chan *Client)
 	send = make(chan Message)
 }
@@ -27,8 +28,14 @@ func StartServer() {
 		select {
 
 		case client := <-addClient:
+			for _, value := range clients {
+				if value == client.User.ID {
+					log.Println("User already in the websocket map.")
+					break
+				}
+			}
 			log.Println("Adding client...")
-			clients[client] = true
+			clients[client] = client.User.ID
 			log.Println("Added client...")
 		case m := <-send:
 			// send the message to the recepient...
@@ -36,10 +43,10 @@ func StartServer() {
 			var sent = false
 			// first of all loop through the list of clients to find the recepient
 			for c := range clients {
-				if c.User.ID == m.recepient {
+				if c.User.ID == m.Recepient {
 					// send the message to this user...
 					log.Println("User found. sending the message...")
-					c.send <- m.message
+					c.send <- m
 					sent = true
 				}
 			}

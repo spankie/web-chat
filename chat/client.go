@@ -7,7 +7,7 @@ import (
 
 	"bytes"
 
-	"strconv"
+	"encoding/json"
 
 	"github.com/gorilla/websocket"
 	"github.com/spankie/web-chat/models"
@@ -36,7 +36,7 @@ var (
 type Client struct {
 	User models.User
 	Conn *websocket.Conn
-	send chan []byte
+	send chan Message
 }
 
 func (c *Client) readPump() {
@@ -54,17 +54,20 @@ func (c *Client) readPump() {
 			break
 		}
 		// arrange the message by getting the recepient id
-		log.Println("ReadPump: Got message from client...", string(message))
+		// log.Println("ReadPump: Got message from client...", string(message))
 		message = bytes.TrimSpace(message)
-		mm := bytes.SplitN(message, newline, 2)
-		log.Println("mm: ", mm[0])
-		rpt, _ := strconv.Atoi(string(mm[0]))
-		m := Message{
-			recepient: rpt,
-			message:   mm[1],
-			Me:        c.User.ID,
+		// mm := bytes.SplitN(message, newline, 2)
+		// log.Println("mm: ", mm[0])
+		// rpt, _ := strconv.Atoi(string(mm[0]))
+		var m Message
+		err = json.Unmarshal(message, &m)
+		if err != nil {
+			log.Println("Invalid message. Could not Unmarshal to struct message.")
+			log.Println("readPUMP:: err: ", err)
+			continue
+			// send feed back of message not sent...
 		}
-		log.Println("ReadPump: Arranged the message...Sending to recepient server send channel")
+		log.Println("ReadPump: Arranged the message...Sending to recepient server send channel: ", &m)
 		send <- m
 		log.Println("ReadPump: sent to the send channel...")
 	}
@@ -84,20 +87,18 @@ func (c *Client) writePump() {
 			return
 		}
 		log.Println("Writing to self...")
-		w.Write(m)
+		messageJSON, err := json.Marshal(m)
+		if err != nil {
+			// find a way to send feedback, the message could not be sent.
+			log.Println("Could not encode the message to json.")
+			continue
+		}
+		w.Write(messageJSON)
 		log.Println("Wrote to self...")
 		if err := w.Close(); err != nil {
 			log.Println("Could not close the writer...")
 			return
 		}
-		log.Println("Message: ", string(m))
+		log.Println("Message: ", string(messageJSON))
 	}
-	// for {
-	// 	select {
-	// 	case message := <-c.send:
-	// 		// write the message to the user
-
-	// 	}
-
-	// }
 }

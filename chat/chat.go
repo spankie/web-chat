@@ -19,6 +19,7 @@ var upgrader = websocket.Upgrader{
 func Chat(w http.ResponseWriter, r *http.Request) {
 	log.Println("::CHAT::")
 	ctx := r.Context()
+
 	// accept the websocket connection
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -31,6 +32,7 @@ func Chat(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	log.Println("New writer...")
+
 	// check if there is a new claim
 	claims, ok := ctx.Value("Claims").(jwt.MapClaims)
 	if claims == nil || !ok {
@@ -47,18 +49,29 @@ func Chat(w http.ResponseWriter, r *http.Request) {
 	log.Println("claimID:", claimID)
 
 	db := config.Get().DB
+
 	// create a client object for the user.
-	client := &Client{User: db[claimID], Conn: conn, send: make(chan []byte)}
+	client := &Client{User: db[claimID], Conn: conn, send: make(chan Message)}
+	for _, value := range clients {
+		if value == claimID {
+			log.Println("User with id: ", claimID, " is already in the map.")
+			return
+		}
+	}
 	log.Println("New client with id : ", claimID)
+
 	// add the client to a map.
 	addClient <- client
 	log.Println("Sent client to addClient")
+
 	// send a welcome message
-	wr.Write([]byte("Welcome to DEE WEB-CHAT..."))
+	hi := []byte("HI")
+	wr.Write(hi)
 	if err = wr.Close(); err != nil {
 		log.Println("error closing: ", err)
 	}
-	log.Println("Wrote: Welcome to DEE WEB-CHAT...")
+	log.Println("Wrote:", hi)
+
 	// launch a goroutine to handle reading and writing to the client
 	go client.writePump()
 	log.Println("launched writepump", claimID)

@@ -33,7 +33,9 @@ userarea.controller("user", function($scope, $location, $cookies, $http, $window
         console.log("Error response: ". response)
     });
 
-
+    // myPush = (mmm) => {
+    //     $scope.chat[$scope.context.username].push(mmm);
+    // }
     // WEBSOCKET
     if(window["WebSocket"]) {
         console.log("WebSocket is available");
@@ -43,17 +45,15 @@ userarea.controller("user", function($scope, $location, $cookies, $http, $window
             console.log("connection closed.")
         }
         conn.onmessage = function (event) {
-            console.log("websocket message: " + event.data);
-            var m = event.data.split('\n');
-            for (var i = 0; i < m.length; i++) {
-                console.log(m[i]);
-                $scope.chat[$scope.context.username].push({
-                    who: "friend",
-                    datetime: now,
-                    message: $scope.message
-                });
-
+            var m = event.data;
+            console.log("websocket message: " + m);
+            if (m == "HI") {
+                return;
             }
+            $scope.$evalAsync(function() {
+                $scope.chat[$scope.context.username].push(JSON.parse(m));
+            });
+            // myPush(JSON.parse(m));
         }
     } else {
         console.log("NO WEBSOCKET...");
@@ -85,20 +85,23 @@ userarea.controller("user", function($scope, $location, $cookies, $http, $window
             $scope.errorMessage = "Empty message.";
             return;
         }
-        var theMessage = $scope.context.id + "\n" + $scope.message;
+        // var theMessage = $scope.context.id + "\n" + $scope.message;
         // var mm = "2\nHello There";
         var now = new Date();
         now = now.getDate() + "/" + now.getMonth() + "/" + now.getFullYear();
-        console.log("Sending: ", theMessage, "at: ", now);
-        conn.send(theMessage);
-        console.log("Sent: ", theMessage)
+        var theMessage = {
+                Sender: $scope.username,
+                Datetime: now,
+                Message: $scope.message,
+                Recepient: $scope.context.id
+            }
+        var messageJSON = JSON.stringify(theMessage);
+        console.log("Sending: ", messageJSON, "at: ", now);
+        conn.send(messageJSON);
+        console.log("Sent: ", messageJSON);
         // add the message to the chat history of this partiular context user
         console.log("$Scope.chat: ", $scope.chat, " username: ", $scope.context.username);
-        $scope.chat[$scope.context.username].push({
-                who: "me",
-                datetime: now,
-                message: $scope.message
-            });
+        $scope.chat[$scope.context.username].push(theMessage);
     }
 
     $scope.changeContext = (me) => {
@@ -109,7 +112,7 @@ userarea.controller("user", function($scope, $location, $cookies, $http, $window
         }
         /*
             Message : {
-                who: me/friend
+                sender: me/friend
                 datetime: new Date()
                 message: "hello sire"
             }
@@ -127,6 +130,7 @@ userarea.controller("user", function($scope, $location, $cookies, $http, $window
             if (data.hasOwnProperty('status') && data.status == 'error') {
                 // Could not get the user...
                 // Display the error here
+                $scope.foundFriend = false;
                 return;
             }
             // check if there is id and username
@@ -138,6 +142,7 @@ userarea.controller("user", function($scope, $location, $cookies, $http, $window
             }
         }, function(response) {
             // ERROR CALLBACK
+            $scope.error = "Cannot access the server at this time...";
         });
     }
 
@@ -158,6 +163,7 @@ userarea.controller("user", function($scope, $location, $cookies, $http, $window
                 $scope.addLoader = false;
             } else if (data.hasOwnProperty('status') && data.status == 'ok') {
                 // message is not empty...
+                $scope.chat[$scope.friend.username] = []
                 $scope.friends.push($scope.friend);
                 $scope.friend = null;
                 $scope.friendName = "";
@@ -165,7 +171,7 @@ userarea.controller("user", function($scope, $location, $cookies, $http, $window
             }
         }, function(response) {
             // ERROR CALLBACK...
-            $scope.error = "Cannot access the server at this time..."
+            $scope.error = "Cannot access the server at this time...";
         });
     }
 
@@ -173,6 +179,7 @@ userarea.controller("user", function($scope, $location, $cookies, $http, $window
         console.log("logout()");
         $cookies.remove("deewebchat", {path: "/"});
         $window.location.href = "/";
+        // TODO :: Send the server a message of logout so that the user can be removed from the DB
         // $http.post("/api/logout", {}).then(function(response){
         //     // successful request...
 

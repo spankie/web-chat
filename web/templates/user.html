@@ -82,10 +82,10 @@
                                 <p ng-if="!chat[context.username].length" class="green bg-white tc pa2 shadow-4 br1">No Chat History</p>
                                 <div class="">    
                                     <div ng-if="chat[context.username].length" class="relative" ng-repeat="message in chat[context.username]">
-                                        <div class="cf"><p class="mv0 white sender">{{message.who}}:</p></div>
+                                        <div class="cf"><p class="mv0 white sender">{{message.Sender}}:</p></div>
                                         <div class="pa2 bg-white green dib br3 mv1 fm shadow-4">
-                                            <span class="">{{message.message}}</span>
-                                            <span class="">{{message.datetime}}</span>
+                                            <span class="">{{message.Message}}</span>
+                                            <span class="">{{message.Datetime}}</span>
                                         </div>
                                     </div>
                                     <!--<div class="relative">
