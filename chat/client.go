@@ -40,6 +40,12 @@ type Client struct {
 }
 
 func (c *Client) readPump() {
+	defer func() {
+		log.Println("send to remove channel")
+		removeClient <- c
+		c.Conn.Close()
+	}()
+
 	c.Conn.SetReadLimit(maxMessageSize)
 	c.Conn.SetReadDeadline(time.Time{}) // pass zero value to prevent time out
 	// c.Conn.SetReadDeadline(time.Now().Add(pongWait))

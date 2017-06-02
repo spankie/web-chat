@@ -75,7 +75,7 @@
 
                 <div class="fl w-50 pa2">
                     <div class="b--green bg-white pa1 shadow-1">
-                        <h2 class="tc">Chat {{ context.username || "" }}</h2>
+                        <h2 class="tc">{{ context.username || "CHAT" }}</h2>
                         <hr class="light">
                         <div class="">
                             <div class="pa2 bg-green" id="chatbox">
@@ -104,9 +104,9 @@
                                     </div>-->
                                 </div>
                             </div>
-                            <div class="pb2 cf">
-                                <p class="mv1 red tc">{{ errorMessage }}</p>
-                                <textarea class="w-100 h3" style="max-width: 100%; max-height: 70px;" ng-model="message">Hello there.</textarea>
+                            <div class="pv2 cf">
+                                <p ng-if="errorMessage" class="bg-red white pv1 tc mv0">{{ errorMessage }}</p>
+                                <textarea class="w-100 h3 pa2 ba b--green bw1" style="max-width: 100%; max-height: 70px;" ng-model="message">Hello there.</textarea>
                                 <input type="button" ng-click="sendMessage()" value="SEND" class="mv1 w-20 ba bg-green white shadow-2 pa2 fr">
                             </div>
                         </div>

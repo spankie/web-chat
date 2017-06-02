@@ -33,9 +33,14 @@ userarea.controller("user", function($scope, $location, $cookies, $http, $window
         console.log("Error response: ". response)
     });
 
-    // myPush = (mmm) => {
-    //     $scope.chat[$scope.context.username].push(mmm);
-    // }
+    var appendChat = (msg) => {
+        $scope.$evalAsync(() => {
+            if ($scope.context != null) {
+                $scope.chat[$scope.context.username].push(msg);
+            }
+        })
+    }
+
     // WEBSOCKET
     if(window["WebSocket"]) {
         console.log("WebSocket is available");
@@ -50,10 +55,10 @@ userarea.controller("user", function($scope, $location, $cookies, $http, $window
             if (m == "HI") {
                 return;
             }
-            $scope.$evalAsync(function() {
-                $scope.chat[$scope.context.username].push(JSON.parse(m));
-            });
-            // myPush(JSON.parse(m));
+            
+            var messageJSON = JSON.parse(m);
+            messageJSON.Message = messageJSON.Message.replace("\n", "<br>");
+            appendChat(messageJSON)
         }
     } else {
         console.log("NO WEBSOCKET...");
@@ -90,18 +95,20 @@ userarea.controller("user", function($scope, $location, $cookies, $http, $window
         var now = new Date();
         now = now.getDate() + "/" + now.getMonth() + "/" + now.getFullYear();
         var theMessage = {
-                Sender: $scope.username,
-                Datetime: now,
-                Message: $scope.message,
-                Recepient: $scope.context.id
-            }
+            Sender: $scope.username,
+            Datetime: now,
+            Message: $scope.message,
+            Recepient: $scope.context.id
+        }
+
         var messageJSON = JSON.stringify(theMessage);
-        console.log("Sending: ", messageJSON, "at: ", now);
         conn.send(messageJSON);
         console.log("Sent: ", messageJSON);
         // add the message to the chat history of this partiular context user
-        console.log("$Scope.chat: ", $scope.chat, " username: ", $scope.context.username);
-        $scope.chat[$scope.context.username].push(theMessage);
+        // console.log("$Scope.chat: ", $scope.chat, " username: ", $scope.context.username);
+        theMessage.Message = theMessage.Message.replace("\n", "<br>");
+        appendChat(theMessage);
+        $scope.message = "";
     }
 
     $scope.changeContext = (me) => {
@@ -126,7 +133,7 @@ userarea.controller("user", function($scope, $location, $cookies, $http, $window
         $http.post("/api/search/friend", {username: $scope.friendName}).then(function(response){
             // SUCCESS CALLBACK
             data = response.data;
-            console.log(data);
+            // console.log(data);
             if (data.hasOwnProperty('status') && data.status == 'error') {
                 // Could not get the user...
                 // Display the error here

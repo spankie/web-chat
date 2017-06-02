@@ -81,6 +81,7 @@ func main() {
 
 	router.Post("/api/signup", commonHandlers.ThenFunc(web.Signup))
 	router.Post("/api/login", commonHandlers.ThenFunc(web.Login))
+	router.Post("/api/logout", commonHandlers.ThenFunc(web.Logout))
 
 	router.Get("/", commonHandlers.ThenFunc(func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "web/templates/index.html")

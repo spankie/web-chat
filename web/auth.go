@@ -197,3 +197,12 @@ func AuthHandler(next http.Handler) http.Handler {
 
 	return http.HandlerFunc(fn)
 }
+
+// Logout handles logout of a client...
+func Logout(w http.ResponseWriter, r *http.Request) {
+	// perform a logout here...
+	// first of all check if the user exists
+	// if the user exists.(remove the cookie...if there is any tho.)
+	// if he is not. Dont send anything...
+	log.Println("LOGOUT.")
+}
