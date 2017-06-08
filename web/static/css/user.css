@@ -150,3 +150,7 @@ hr.light {
 .sender {
     font-size: .8rem;
 }
+
+.message_date {
+  font-size: 12px;
+}
