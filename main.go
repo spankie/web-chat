@@ -84,7 +84,11 @@ func main() {
 	router.Post("/api/logout", commonHandlers.ThenFunc(web.Logout))
 
 	router.Get("/", commonHandlers.ThenFunc(func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "web/templates/index.html")
+		// serve angular page...
+		// http.ServeFile(w, r, "web/templates/index.html")
+
+		// SERVE MITHRIL PAGE...
+		http.ServeFile(w, r, "mithril_client/index.html")
 	}))
 
 	router.Get("/api/chat", commonHandlers.Append(web.AuthHandler).ThenFunc(chat.Chat))
@@ -96,6 +100,15 @@ func main() {
 		w.Header().Set("Cache-Control", "public, max-age=7776000")
 		r.URL.Path = p.ByName("filepath")
 		fileServer.ServeHTTP(w, r)
+	})
+
+	// SERVE MITHRIL FILES FROM THE MITHRIL FOLDER
+	mithrilFileServer := http.FileServer(http.Dir("./mithril_client"))
+	router.GET("/mithril/*filepath", func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+		w.Header().Set("Vary", "Accept-Encoding")
+		w.Header().Set("Cache-Control", "public, max-age=7776000")
+		r.URL.Path = p.ByName("filepath")
+		mithrilFileServer.ServeHTTP(w, r)
 	})
 
 	router.Get("/web/:user", commonHandlers.Append(web.AuthHandler).ThenFunc(web.UserArea))
