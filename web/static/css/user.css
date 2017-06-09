@@ -3,7 +3,7 @@ html {
     min-width: 900px;
 }
 
-body {
+.body {
     background: white url('/assets/img/grid-bg.png') top left repeat;
     max-height: 100%;
 }

@@ -2,5 +2,7 @@ module.exports = {
     myUsername: "",
     myPassword: "",
     authError: "",
-    authMessage: ""
+    authMessage: "",
+    friendName: "",
+    friends: []
 }
