@@ -2,6 +2,10 @@ var m = require("mithril");
 var data = require("../models/data");
 
 module.exports = () => {
+    if(data.myUsername == "" || data.myPassword == ""){
+        data.authError = "Username or password cannot be empty.";
+        return;
+    }
     // signup the user here...
     console.log("signup");
     return m.request({
@@ -17,10 +21,11 @@ module.exports = () => {
             // signup successful
             // clear error if there is any showing
             data.authError = "";
-            data.authMessage = "logged in";
+            data.authMessage = "signed up";
             // TODO: add expiry date...
             document.cookie = "deewebchat=" + response.cookie + ";path=/";
             // redirect to /web/myUsername
+            m.route.set("/" + data.myUsername);
         } else if (response.status == "error") {
             // clear message if there is any showing
             data.authMessage = "";

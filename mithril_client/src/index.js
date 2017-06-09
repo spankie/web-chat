@@ -8,5 +8,10 @@ m.route(document.body, "/", {
             // return m("h1.bg-red", "Hello there!! This is web-chat with mithril")
             return m(Home);
         }
+    },
+    "/:username": {
+        render: function(vnode) {
+            return m(".pa2.bg-black.white.tc.f3", "Hi " + vnode.attrs.username);
+        }
     }
 })

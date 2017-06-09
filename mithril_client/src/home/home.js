@@ -29,7 +29,7 @@ module.exports = {
                     }, [
                         m(".mb2.tl", [m("label.db.mb2.gray", "Username"), m("input.pa2.ba.b--green.br1.w-100", {
                             oninput: m.withAttr("value", function(value) { data.myUsername = value; }),
-                            type: "text", name:"username", placeholder: "Username"})]),
+                            type: "text", name:"username", placeholder: "Username", value: data.myUsername})]),
                         m(".mb2.tl", [m("label.db.mb2.gray", "Password"), m("input.pa2.ba.b--green.br1.w-100", {
                             oninput: m.withAttr("value", function(value) { data.myPassword = value; }),
                             type: "password", name: "passwd", placeholder: "Password"})]),
