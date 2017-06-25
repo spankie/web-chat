@@ -70,7 +70,7 @@ func main() {
 
 	commonHandlers := alice.New(web.LoggingHandler)
 
-	log.Println("commonhandlers: ", commonHandlers)
+	// log.Println("commonhandlers: ", commonHandlers)
 
 	// start chat server
 	go chat.StartServer()
@@ -84,7 +84,7 @@ func main() {
 	router.Post("/api/logout", commonHandlers.ThenFunc(web.Logout))
 
 	router.Get("/", commonHandlers.ThenFunc(func(w http.ResponseWriter, r *http.Request) {
-		// serve angular page...
+		// SERVE ANGULAR PAGE...
 		// http.ServeFile(w, r, "web/templates/index.html")
 
 		// SERVE MITHRIL PAGE...
