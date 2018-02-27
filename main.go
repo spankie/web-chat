@@ -85,10 +85,10 @@ func main() {
 
 	router.Get("/", commonHandlers.ThenFunc(func(w http.ResponseWriter, r *http.Request) {
 		// SERVE ANGULAR PAGE...
-		// http.ServeFile(w, r, "web/templates/index.html")
+		http.ServeFile(w, r, "web/templates/index.html")
 
 		// SERVE MITHRIL PAGE...
-		http.ServeFile(w, r, "mithril_client/index.html")
+		// http.ServeFile(w, r, "mithril_client/index.html")
 	}))
 
 	router.Get("/api/chat", commonHandlers.Append(web.AuthHandler).ThenFunc(chat.Chat))
